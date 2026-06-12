@@ -9,7 +9,12 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
     var status: PurchaseStatus = .waiting
     var notes: String = ""
     var links: [String] = []
-    var questions: [ReflectionQuestion] = ReflectionQuestion.defaults
+    var questions: [ReflectionQuestion]
+
+    init(name: String, questions: [ReflectionQuestion] = ReflectionQuestion.defaults) {
+        self.name = name
+        self.questions = questions
+    }
 
     var daysSinceAdded: Int {
         Calendar.current.dateComponents([.day], from: dateAdded, to: Date()).day ?? 0

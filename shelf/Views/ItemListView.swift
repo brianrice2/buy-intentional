@@ -1,16 +1,9 @@
-//
-//  ItemListView.swift
-//  shelf
-//
-//  Created by Brian Rice on 6/11/26.
-//
-
-
 import SwiftUI
 
 struct ItemListView: View {
     @EnvironmentObject var store: ItemStore
     @State private var showingAddSheet = false
+    @State private var showingSettings = false
     @State private var newItemName = ""
 
     var body: some View {
@@ -24,6 +17,13 @@ struct ItemListView: View {
             }
             .navigationTitle("Shelf")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingAddSheet = true
@@ -34,6 +34,9 @@ struct ItemListView: View {
             }
             .sheet(isPresented: $showingAddSheet) {
                 addSheet
+            }
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
             }
         }
     }

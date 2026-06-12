@@ -1,17 +1,13 @@
-//
-//  shelfApp.swift
-//  shelf
-//
-//  Created by Brian Rice on 6/11/26.
-//
-
 import SwiftUI
 
 @main
-struct shelfApp: App {
+struct ShelfApp: App {
+    @StateObject private var store = ItemStore()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ItemListView()
+                .environmentObject(store)
         }
     }
 }

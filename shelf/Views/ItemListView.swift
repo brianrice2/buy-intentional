@@ -1,0 +1,120 @@
+//
+//  ItemListView.swift
+//  shelf
+//
+//  Created by Brian Rice on 6/11/26.
+//
+
+
+import SwiftUI
+
+struct ItemListView: View {
+    @EnvironmentObject var store: ItemStore
+    @State private var showingAddSheet = false
+    @State private var newItemName = ""
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if store.items.isEmpty {
+                    emptyState
+                } else {
+                    list
+                }
+            }
+            .navigationTitle("Shelf")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddSheet) {
+                addSheet
+            }
+        }
+    }
+
+    // MARK: - Subviews
+
+    private var list: some View {
+        List {
+            ForEach(store.items) { item in
+                NavigationLink(destination: ItemDetailView(item: item)) {
+                    ItemRowView(item: item)
+                }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+            }
+            .onDelete { offsets in
+                store.delete(at: offsets)
+            }
+        }
+        .listStyle(.plain)
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "cart")
+                .font(.system(size: 40))
+                .foregroundStyle(.tertiary)
+            Text("Nothing here yet")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            Text("Tap + to add something you're considering buying.")
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var addSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("What are you considering?")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+
+                TextField("Item name", text: $newItemName)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.body)
+                    .submitLabel(.done)
+                    .onSubmit { submitAdd() }
+
+                Spacer()
+            }
+            .padding(.horizontal)
+            .navigationTitle("Add item")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        newItemName = ""
+                        showingAddSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        submitAdd()
+                    }
+                    .disabled(newItemName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+        }
+        .presentationDetents([.height(200)])
+    }
+
+    private func submitAdd() {
+        let name = newItemName.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        store.add(name: name)
+        newItemName = ""
+        showingAddSheet = false
+    }
+}

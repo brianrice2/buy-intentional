@@ -2,42 +2,55 @@ import SwiftUI
 
 struct ItemListView: View {
     @EnvironmentObject var store: ItemStore
-    @State private var showingAddSheet = false
-    @State private var showingSettings = false
+    @State private var showingAddSheet  = false
+    @State private var showingSettings  = false
+    @State private var showingStats     = false
+//    @State private var shareURL: IdentifiableURL? = nil
     @State private var newItemName = ""
 
     var body: some View {
         NavigationStack {
             Group {
-                if store.items.isEmpty {
+                if store.activeItems.isEmpty {
                     emptyState
                 } else {
                     list
                 }
             }
-            .navigationTitle("Wishlist")
+            .navigationTitle("BuyIntentional")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        showingSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
+                    HStack(spacing: 4) {
+                        Button { showingSettings = true } label: {
+                            Image(systemName: "gearshape")
+                        }
+                        Button { showingStats = true } label: {
+                            Image(systemName: "chart.bar")
+                        }
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingAddSheet = true
-                    } label: {
-                        Image(systemName: "plus")
+                    HStack(spacing: 4) {
+//                        if !store.activeItems.isEmpty {
+//                            Button {
+//                                shareURL = IdentifiableURL(url: HTMLExporter.tempFile(for: store.activeItems))
+//                            } label: {
+//                                Image(systemName: "square.and.arrow.up")
+//                            }
+//                        }
+                        Button { showingAddSheet = true } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
-            .sheet(isPresented: $showingAddSheet) {
-                addSheet
-            }
-            .sheet(isPresented: $showingSettings) {
-                SettingsView()
-            }
+            .sheet(isPresented: $showingAddSheet)  { addSheet }
+            .sheet(isPresented: $showingSettings)  { SettingsView() }
+            .sheet(isPresented: $showingStats)      { StatsView() }
+//            .sheet(item: $shareURL) { identifiable in
+//                ShareSheet(items: [identifiable.url])
+//                    .presentationDetents([.medium, .large])
+//            }
         }
     }
 
@@ -45,7 +58,7 @@ struct ItemListView: View {
 
     private var list: some View {
         List {
-            ForEach(store.items) { item in
+            ForEach(store.activeItems) { item in
                 NavigationLink(destination: ItemDetailView(item: item)) {
                     ItemRowView(item: item)
                 }
@@ -53,7 +66,7 @@ struct ItemListView: View {
                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
             }
             .onDelete { offsets in
-                store.delete(at: offsets)
+                store.rejectActive(at: offsets)
             }
         }
         .listStyle(.plain)
@@ -103,10 +116,8 @@ struct ItemListView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        submitAdd()
-                    }
-                    .disabled(newItemName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Button("Add") { submitAdd() }
+                        .disabled(newItemName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }

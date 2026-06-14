@@ -1,94 +1,101 @@
 import SwiftUI
 
+// MARK: - SettingsView (top-level menu)
+
 struct SettingsView: View {
     @EnvironmentObject var store: ItemStore
-    @State private var newQuestion = ""
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    NavigationLink(destination: DefaultQuestionsView()) {
+                        Label("Default questions", systemImage: "questionmark.bubble")
+                    }
+                    NavigationLink(destination: RejectedItemsView()) {
+                        HStack {
+                            Label("Rejected items", systemImage: "xmark.circle")
+                            Spacer()
+                            if !store.rejectedItems.isEmpty {
+                                Text("\(store.rejectedItems.count)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Settings")
+        }
+    }
+}
+
+// MARK: - DefaultQuestionsView
+
+struct DefaultQuestionsView: View {
+    @EnvironmentObject var store: ItemStore
+    @State private var newQuestion      = ""
     @State private var editingQuestion: ReflectionQuestion? = nil
     @State private var showingResetAlert = false
     @FocusState private var addFieldFocused: Bool
 
     var body: some View {
-        NavigationStack {
-            List {
-                defaultQuestionsSection
-                addQuestionSection
-                resetSection
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Settings")
-            .alert("Reset to defaults?", isPresented: $showingResetAlert) {
-                Button("Reset", role: .destructive) {
-                    store.resetDefaultQuestions()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This replaces your current default questions. Items you've already added keep their own questions.")
-            }
-            .sheet(item: $editingQuestion) { question in
-                EditQuestionSheet(question: question) { updated in
-                    store.updateDefaultQuestion(updated)
-                }
-            }
-        }
-    }
-
-    // MARK: - Sections
-
-    private var defaultQuestionsSection: some View {
-        Section {
-            if store.defaultQuestions.isEmpty {
-                Text("No default questions. Add one below.")
-                    .font(.subheadline)
-                    .foregroundStyle(.tertiary)
-                    .padding(.vertical, 4)
-            } else {
-                ForEach(store.defaultQuestions) { question in
-                    QuestionRow(question: question) {
-                        editingQuestion = question
+        List {
+            Section {
+                if store.defaultQuestions.isEmpty {
+                    Text("No default questions. Add one below.")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .padding(.vertical, 4)
+                } else {
+                    ForEach(store.defaultQuestions) { question in
+                        QuestionRow(question: question) {
+                            editingQuestion = question
+                        }
                     }
+                    .onDelete { store.deleteDefaultQuestion(at: $0) }
+                    .onMove  { store.moveDefaultQuestion(from: $0, to: $1) }
                 }
-                .onDelete { offsets in
-                    store.deleteDefaultQuestion(at: offsets)
-                }
-                .onMove { source, destination in
-                    store.moveDefaultQuestion(from: source, to: destination)
+            } header: {
+                Text("Default questions")
+            } footer: {
+                Text("Added to every new item. Swipe to delete, drag to reorder, tap to edit.")
+                    .font(.caption)
+            }
+
+            Section {
+                HStack(spacing: 10) {
+                    TextField("New question…", text: $newQuestion)
+                        .focused($addFieldFocused)
+                        .submitLabel(.done)
+                        .onSubmit { submitQuestion() }
+                    Button("Add", action: submitQuestion)
+                        .disabled(newQuestion.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
-        } header: {
-            Text("Default questions")
-        } footer: {
-            Text("These questions are added to every new item. Swipe to delete, drag to reorder, tap to edit.")
-                .font(.caption)
-        }
-    }
 
-    private var addQuestionSection: some View {
-        Section {
-            HStack(spacing: 10) {
-                TextField("New question…", text: $newQuestion)
-                    .focused($addFieldFocused)
-                    .submitLabel(.done)
-                    .onSubmit { submitQuestion() }
-
-                Button("Add", action: submitQuestion)
-                    .disabled(newQuestion.trimmingCharacters(in: .whitespaces).isEmpty)
+            Section {
+                Button("Reset to defaults") { showingResetAlert = true }
+                    .foregroundStyle(.orange)
+            } footer: {
+                Text("Restores the original five questions. Only affects new items going forward.")
+                    .font(.caption)
             }
         }
-    }
-
-    private var resetSection: some View {
-        Section {
-            Button("Reset to defaults") {
-                showingResetAlert = true
-            }
-            .foregroundStyle(.orange)
-        } footer: {
-            Text("Restores the original five questions. Only affects new items going forward.")
-                .font(.caption)
+        .listStyle(.insetGrouped)
+        .navigationTitle("Default questions")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Reset to defaults?", isPresented: $showingResetAlert) {
+            Button("Reset", role: .destructive) { store.resetDefaultQuestions() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This replaces your current default questions. Items you've already added keep their own questions.")
+        }
+        .sheet(item: $editingQuestion) { question in
+            EditQuestionSheet(question: question) { store.updateDefaultQuestion($0) }
         }
     }
-
-    // MARK: - Actions
 
     private func submitQuestion() {
         let text = newQuestion.trimmingCharacters(in: .whitespaces)
@@ -96,6 +103,81 @@ struct SettingsView: View {
         store.addDefaultQuestion(text)
         newQuestion = ""
         addFieldFocused = false
+    }
+}
+
+// MARK: - RejectedItemsView
+
+struct RejectedItemsView: View {
+    @EnvironmentObject var store: ItemStore
+    @State private var showingClearAlert = false
+
+    var body: some View {
+        List {
+            if store.rejectedItems.isEmpty {
+                Section {
+                    Text("No rejected items.")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .padding(.vertical, 4)
+                }
+            } else {
+                Section {
+                    ForEach(store.rejectedItems) { item in
+                        RejectedItemRow(item: item)
+                    }
+                    .onDelete { store.permanentlyDeleteRejected(at: $0) }
+                } header: {
+                    Text("Rejected items")
+                } footer: {
+                    Text("Swipe to permanently delete. These count toward your money saved total.")
+                        .font(.caption)
+                }
+
+                Section {
+                    Button("Clear all rejected items", role: .destructive) {
+                        showingClearAlert = true
+                    }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("Rejected items")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Clear all rejected items?", isPresented: $showingClearAlert) {
+            Button("Clear all", role: .destructive) { store.clearAllRejected() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes \(store.rejectedItems.count) item\(store.rejectedItems.count == 1 ? "" : "s"). This can't be undone.")
+        }
+    }
+}
+
+// MARK: - RejectedItemRow
+
+private struct RejectedItemRow: View {
+    let item: PurchaseItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(item.name)
+                .font(.body)
+                .foregroundStyle(.primary)
+            HStack(spacing: 8) {
+                Text("Rejected")
+                    .font(.caption)
+                    .foregroundStyle(.red.opacity(0.8))
+                if let price = item.price {
+                    Text("·")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    Text("$\(price, format: .number.precision(.fractionLength(2)))")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .padding(.vertical, 2)
     }
 }
 
@@ -132,7 +214,7 @@ struct EditQuestionSheet: View {
 
     init(question: ReflectionQuestion, onSave: @escaping (ReflectionQuestion) -> Void) {
         self.original = question
-        self.onSave = onSave
+        self.onSave   = onSave
         _text = State(initialValue: question.question)
     }
 
@@ -143,7 +225,6 @@ struct EditQuestionSheet: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.top, 8)
-
                 TextEditor(text: $text)
                     .font(.body)
                     .frame(minHeight: 80)
@@ -151,7 +232,6 @@ struct EditQuestionSheet: View {
                     .padding(10)
                     .background(Color(.secondarySystemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-
                 Spacer()
             }
             .padding(.horizontal)

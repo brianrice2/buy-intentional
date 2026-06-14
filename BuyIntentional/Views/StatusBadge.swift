@@ -21,6 +21,7 @@ struct StatusBadge: View {
         switch status {
         case .waiting:  return Color.orange.opacity(0.12)
         case .approved: return Color.green.opacity(0.12)
+        case .rejected: return Color.red.opacity(0.12)
         }
     }
 
@@ -28,6 +29,7 @@ struct StatusBadge: View {
         switch status {
         case .waiting:  return .orange
         case .approved: return .green
+        case .rejected: return .red
         }
     }
 
@@ -35,6 +37,7 @@ struct StatusBadge: View {
         switch status {
         case .waiting:  return Color.orange.opacity(0.3)
         case .approved: return Color.green.opacity(0.3)
+        case .rejected: return Color.red.opacity(0.3)
         }
     }
 }
@@ -68,6 +71,7 @@ struct StatusToggleButton: View {
         switch status {
         case .waiting:  return Color.orange.opacity(0.12)
         case .approved: return Color.green.opacity(0.12)
+        case .rejected: return Color.red.opacity(0.12)
         }
     }
 
@@ -75,6 +79,7 @@ struct StatusToggleButton: View {
         switch status {
         case .waiting:  return .orange
         case .approved: return .green
+        case .rejected: return .red
         }
     }
 
@@ -82,6 +87,7 @@ struct StatusToggleButton: View {
         switch status {
         case .waiting:  return Color.orange.opacity(0.3)
         case .approved: return Color.green.opacity(0.3)
+        case .rejected: return Color.red.opacity(0.3)
         }
     }
 }

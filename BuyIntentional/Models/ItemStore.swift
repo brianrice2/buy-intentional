@@ -6,17 +6,32 @@ final class ItemStore: ObservableObject {
     @Published var items: [PurchaseItem] = []
     @Published var defaultQuestions: [ReflectionQuestion] = []
 
-    private let itemsKey     = "shelf.items"
-    private let defaultsKey  = "shelf.defaultQuestions"
+    private let itemsKey    = "shelf.items"
+    private let defaultsKey = "shelf.defaultQuestions"
 
-    init() {
-        load()
+    // MARK: - Computed views
+
+    var activeItems: [PurchaseItem] {
+        items.filter { $0.status != .rejected }
     }
+
+    var rejectedItems: [PurchaseItem] {
+        items.filter { $0.status == .rejected }
+    }
+
+    var wishlistTotal: Double {
+        activeItems.compactMap { $0.price }.reduce(0, +)
+    }
+
+    var savedTotal: Double {
+        rejectedItems.compactMap { $0.price }.reduce(0, +)
+    }
+
+    init() { load() }
 
     // MARK: - Item CRUD
 
     func add(name: String) {
-        // New items get a fresh copy of the current default questions (no answers)
         let questions = defaultQuestions.map { ReflectionQuestion(question: $0.question) }
         let item = PurchaseItem(name: name, questions: questions)
         items.append(item)
@@ -29,13 +44,40 @@ final class ItemStore: ObservableObject {
         saveItems()
     }
 
-    func delete(_ item: PurchaseItem) {
+    /// Marks an item as rejected (soft delete from home list).
+    func reject(_ item: PurchaseItem) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[idx].status = .rejected
+        saveItems()
+    }
+
+    /// Marks items at given offsets in activeItems as rejected.
+    func rejectActive(at offsets: IndexSet) {
+        let targets = offsets.map { activeItems[$0].id }
+        for id in targets {
+            if let idx = items.firstIndex(where: { $0.id == id }) {
+                items[idx].status = .rejected
+            }
+        }
+        saveItems()
+    }
+
+    /// Permanently deletes a specific item.
+    func permanentlyDelete(_ item: PurchaseItem) {
         items.removeAll { $0.id == item.id }
         saveItems()
     }
 
-    func delete(at offsets: IndexSet) {
-        items.remove(atOffsets: offsets)
+    /// Permanently deletes items at given offsets in rejectedItems.
+    func permanentlyDeleteRejected(at offsets: IndexSet) {
+        let targets = offsets.map { rejectedItems[$0].id }
+        items.removeAll { targets.contains($0.id) }
+        saveItems()
+    }
+
+    /// Permanently deletes all rejected items.
+    func clearAllRejected() {
+        items.removeAll { $0.status == .rejected }
         saveItems()
     }
 

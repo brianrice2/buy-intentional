@@ -4,17 +4,22 @@ struct ItemDetailView: View {
     @EnvironmentObject var store: ItemStore
     @Environment(\.dismiss) var dismiss
 
-    // Local working copy — committed on every change
     @State private var item: PurchaseItem
-    @State private var newLink = ""
-    @State private var newQuestion = ""
-    @State private var showingDeleteAlert = false
+    @State private var priceText    = ""
+    @State private var newLink      = ""
+    @State private var newQuestion  = ""
+    @State private var showingRejectAlert = false
+//    @State private var shareURL: IdentifiableURL? = nil
     @FocusState private var focusedField: Field?
 
-    enum Field: Hashable { case notes, link, question }
+    enum Field: Hashable { case price, notes, link, question }
 
     init(item: PurchaseItem) {
         _item = State(initialValue: item)
+        // Seed priceText from existing price if present
+        if let p = item.price {
+            _priceText = State(initialValue: String(format: "%.2f", p))
+        }
     }
 
     var body: some View {
@@ -22,26 +27,41 @@ struct ItemDetailView: View {
             VStack(alignment: .leading, spacing: 24) {
                 statusSection
                 Divider()
+                priceSection
+                Divider()
                 notesSection
                 Divider()
                 linksSection
                 Divider()
                 questionsSection
                 Divider()
-                deleteSection
+                rejectSection
             }
             .padding()
         }
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.large)
-        .alert("Remove \"\(item.name)\"?", isPresented: $showingDeleteAlert) {
-            Button("Remove", role: .destructive) {
-                store.delete(item)
+        .toolbar {
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button {
+//                    shareURL = IdentifiableURL(url: HTMLExporter.tempFile(for: item))
+//                } label: {
+//                    Image(systemName: "square.and.arrow.up")
+//                }
+//            }
+        }
+//        .sheet(item: $shareURL) { identifiable in
+//            ShareSheet(items: [identifiable.url])
+//                .presentationDetents([.medium, .large])
+//        }
+        .alert("Reject \"\(item.name)\"?", isPresented: $showingRejectAlert) {
+            Button("Reject", role: .destructive) {
+                store.reject(item)
                 dismiss()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This can't be undone.")
+            Text("This will move the item to your rejected list. You can permanently delete it from Settings.")
         }
     }
 
@@ -51,11 +71,9 @@ struct ItemDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(label: "Status")
             HStack(spacing: 10) {
-                ForEach(PurchaseStatus.allCases, id: \.self) { status in
-                    StatusToggleButton(
-                        status: status,
-                        isSelected: item.status == status
-                    ) {
+                // Show Waiting and Approved only here; Rejected is via the dedicated button below
+                ForEach([PurchaseStatus.waiting, .approved], id: \.self) { status in
+                    StatusToggleButton(status: status, isSelected: item.status == status) {
                         item.status = status
                         commit()
                     }
@@ -65,6 +83,29 @@ struct ItemDetailView: View {
             Text("Added \(item.dateAdded.formatted(date: .abbreviated, time: .omitted)) · \(item.daysSinceAdded) days ago")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
+        }
+    }
+
+    private var priceSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SectionHeader(label: "Price")
+            HStack {
+                Text("$")
+                    .foregroundStyle(.secondary)
+                TextField("0.00", text: $priceText)
+                    .keyboardType(.decimalPad)
+                    .focused($focusedField, equals: .price)
+                    .onChange(of: priceText) { _, newVal in
+                        // Strip non-numeric characters except decimal
+                        let filtered = newVal.filter { $0.isNumber || $0 == "." }
+                        if filtered != newVal { priceText = filtered }
+                        item.price = Double(filtered)
+                        commit()
+                    }
+            }
+            .padding(12)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
     }
 
@@ -86,7 +127,6 @@ struct ItemDetailView: View {
     private var linksSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(label: "Links")
-
             if !item.links.isEmpty {
                 VStack(spacing: 6) {
                     ForEach(item.links, id: \.self) { url in
@@ -97,7 +137,6 @@ struct ItemDetailView: View {
                     }
                 }
             }
-
             HStack(spacing: 8) {
                 TextField("https://…", text: $newLink)
                     .keyboardType(.URL)
@@ -106,7 +145,6 @@ struct ItemDetailView: View {
                     .focused($focusedField, equals: .link)
                     .submitLabel(.done)
                     .onSubmit { submitLink() }
-
                 Button("Add", action: submitLink)
                     .disabled(newLink.trimmingCharacters(in: .whitespaces).isEmpty)
             }
@@ -116,7 +154,6 @@ struct ItemDetailView: View {
     private var questionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(label: "Reflection questions")
-
             ForEach($item.questions) { $q in
                 QuestionCardView(question: $q) {
                     item.questions.removeAll { $0.id == q.id }
@@ -125,13 +162,11 @@ struct ItemDetailView: View {
                     commit()
                 }
             }
-
             HStack(spacing: 8) {
                 TextField("Add your own question…", text: $newQuestion)
                     .focused($focusedField, equals: .question)
                     .submitLabel(.done)
                     .onSubmit { submitQuestion() }
-
                 Button("Add", action: submitQuestion)
                     .disabled(newQuestion.trimmingCharacters(in: .whitespaces).isEmpty)
             }
@@ -139,11 +174,11 @@ struct ItemDetailView: View {
         }
     }
 
-    private var deleteSection: some View {
+    private var rejectSection: some View {
         Button(role: .destructive) {
-            showingDeleteAlert = true
+            showingRejectAlert = true
         } label: {
-            Label("Remove item", systemImage: "trash")
+            Label("Reject item", systemImage: "xmark.circle")
                 .font(.subheadline)
         }
         .padding(.top, 4)

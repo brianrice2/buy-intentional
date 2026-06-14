@@ -10,6 +10,7 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
     var notes: String = ""
     var links: [String] = []
     var questions: [ReflectionQuestion]
+    var price: Double? = nil
 
     init(name: String, questions: [ReflectionQuestion] = ReflectionQuestion.defaults) {
         self.name = name
@@ -26,13 +27,15 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
 }
 
 enum PurchaseStatus: String, Codable, CaseIterable {
-    case waiting = "waiting"
+    case waiting  = "waiting"
     case approved = "approved"
+    case rejected = "rejected"
 
     var label: String {
         switch self {
         case .waiting:  return "Waiting"
         case .approved: return "Approved"
+        case .rejected: return "Rejected"
         }
     }
 }

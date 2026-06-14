@@ -94,6 +94,6 @@ struct ReflectionQuestion: Identifiable, Codable, Equatable {
         ReflectionQuestion(question: "Does this item remove a specific negative from my life?"),
         ReflectionQuestion(question: "How did I come to learn about this item? Was it advertised to me online? Do my friends or family have it?"),
         ReflectionQuestion(question: "How does this item support one of my goals? Does it work against any of my goals, like through reduced savings or time spent on maintenance?"),
-        ReflectionQuestion(question: ""),
+//        ReflectionQuestion(question: ""),
     ]
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct ShelfApp: App {
+struct BuyIntentionalApp: App {
     @StateObject private var store = ItemStore()
 
     var body: some Scene {

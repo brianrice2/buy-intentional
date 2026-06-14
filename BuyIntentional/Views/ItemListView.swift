@@ -15,7 +15,7 @@ struct ItemListView: View {
                     list
                 }
             }
-            .navigationTitle("Shelf")
+            .navigationTitle("Wishlist")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {

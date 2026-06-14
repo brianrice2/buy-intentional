@@ -1,11 +1,3 @@
-//
-//  ItemRowView.swift
-//  shelf
-//
-//  Created by Brian Rice on 6/11/26.
-//
-
-
 import SwiftUI
 
 struct ItemRowView: View {

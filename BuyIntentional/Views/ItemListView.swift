@@ -17,7 +17,7 @@ struct ItemListView: View {
                     list
                 }
             }
-            .navigationTitle("BuyIntentional")
+            .navigationTitle("Wishlist")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     HStack(spacing: 4) {

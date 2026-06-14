@@ -71,8 +71,7 @@ struct ItemDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(label: "Status")
             HStack(spacing: 10) {
-                // Show Waiting and Approved only here; Rejected is via the dedicated button below
-                ForEach([PurchaseStatus.waiting, .approved], id: \.self) { status in
+                ForEach([PurchaseStatus.waiting, .approved, .rejected], id: \.self) { status in
                     StatusToggleButton(status: status, isSelected: item.status == status) {
                         item.status = status
                         commit()

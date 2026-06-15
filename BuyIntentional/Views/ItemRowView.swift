@@ -14,8 +14,8 @@ struct ItemRowView: View {
 
                 HStack(spacing: 8) {
                     Text(daysLabel)
-                    Text("·")
-                    Text("\(item.answeredQuestionCount)/\(item.questions.count) questions")
+                    // Text("·")
+                    // Text("\(item.answeredQuestionCount)/\(item.questions.count) questions")
                 }
                 .font(.caption)
                 .foregroundStyle(.tertiary)

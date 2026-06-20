@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		D30FEE082FDB967500D8CBFC /* Buy Intentional.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Buy Intentional.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3E488A92FE75EC80084DF3A /* Buy-Intentional-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Buy-Intentional-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +33,7 @@
 		D30FEDFF2FDB967500D8CBFC = {
 			isa = PBXGroup;
 			children = (
+				D3E488A92FE75EC80084DF3A /* Buy-Intentional-Info.plist */,
 				D30FEE0A2FDB967500D8CBFC /* BuyIntentional */,
 				D30FEE092FDB967500D8CBFC /* Products */,
 			);
@@ -254,7 +256,9 @@
 				DEVELOPMENT_TEAM = 5RR37K5AFC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Buy-Intentional-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Buy Intentional";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -287,7 +291,9 @@
 				DEVELOPMENT_TEAM = 5RR37K5AFC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Buy-Intentional-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Buy Intentional";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -29,10 +29,8 @@ struct ItemListView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 4) {
-                        Button { showingAddSheet = true } label: {
-                            Image(systemName: "plus")
-                        }
+                    Button { showingAddSheet = true } label: {
+                        Image(systemName: "plus")
                     }
                 }
             }
@@ -90,8 +88,6 @@ struct ItemListView: View {
                     .font(.body)
                     .submitLabel(.done)
                     .onSubmit { submitAdd() }
-
-                Spacer()
             }
             .padding(.horizontal)
             .navigationTitle("Add item")
@@ -109,7 +105,7 @@ struct ItemListView: View {
                 }
             }
         }
-        .presentationDetents([.height(200)])
+        .presentationDetents([.height(160)])
     }
 
     private func submitAdd() {

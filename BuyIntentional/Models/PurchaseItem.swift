@@ -52,7 +52,7 @@ struct ReflectionQuestion: Identifiable, Codable, Equatable {
     var id: UUID = UUID()
     var question: String
     var answer: String = ""
-    
+
     /*
      - Are you ready for the time spent doing this? You have not purchased many items after answering all these questions. Is this item your contemplating so life changing that it is even worth the time to go through this checklist?
      - "If item X is so necessary/desirably how come I've been able to live without it for N years so far?" -jacob

@@ -256,4 +256,4 @@ struct ItemDetailView: View {
         commit()
         showingEditName = false
     }
-}   
+}

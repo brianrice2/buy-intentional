@@ -25,8 +25,8 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
         return formatter.localizedString(for: pastDate, relativeTo: Date())
     }
 
-    var daysSinceAdded: Int {
-        formatToRelativeString(pastDate: dateAdded)
+    var daysSinceAdded: String {
+        formatToRelativeString(from: dateAdded)
     }
 
     var answeredQuestionCount: Int {

@@ -5,6 +5,8 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var store: ItemStore
 
+    private let feedbackFormURL = URL(string: "https://forms.gle/cHYVV3nQJs1AMZDy7")!
+
     var body: some View {
         NavigationStack {
             List {
@@ -23,6 +25,21 @@ struct SettingsView: View {
                             }
                         }
                     }
+                }
+                Section {
+                    Link(destination: feedbackFormURL) {
+                        HStack {
+                            Label("Get in touch", systemImage: "bubble.left.and.bubble.right")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                } footer: {
+                    Text("Send feedback, report a bug, or request a feature.")
+                        .font(.caption)
                 }
             }
             .listStyle(.insetGrouped)

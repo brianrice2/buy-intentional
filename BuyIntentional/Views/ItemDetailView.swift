@@ -9,7 +9,6 @@ struct ItemDetailView: View {
     @State private var newLink      = ""
     @State private var newQuestion  = ""
     @State private var showingRejectAlert = false
-//    @State private var shareURL: IdentifiableURL? = nil
     @FocusState private var focusedField: Field?
 
     enum Field: Hashable { case price, notes, link, question }
@@ -42,18 +41,7 @@ struct ItemDetailView: View {
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
-//            ToolbarItem(placement: .navigationBarTrailing) {
-//                Button {
-//                    shareURL = IdentifiableURL(url: HTMLExporter.tempFile(for: item))
-//                } label: {
-//                    Image(systemName: "square.and.arrow.up")
-//                }
-//            }
         }
-//        .sheet(item: $shareURL) { identifiable in
-//            ShareSheet(items: [identifiable.url])
-//                .presentationDetents([.medium, .large])
-//        }
         .alert("Reject \"\(item.name)\"?", isPresented: $showingRejectAlert) {
             Button("Reject", role: .destructive) {
                 store.reject(item)

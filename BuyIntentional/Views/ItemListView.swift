@@ -5,7 +5,6 @@ struct ItemListView: View {
     @State private var showingAddSheet  = false
     @State private var showingSettings  = false
     @State private var showingStats     = false
-//    @State private var shareURL: IdentifiableURL? = nil
     @State private var newItemName = ""
 
     var body: some View {
@@ -31,13 +30,6 @@ struct ItemListView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 4) {
-//                        if !store.activeItems.isEmpty {
-//                            Button {
-//                                shareURL = IdentifiableURL(url: HTMLExporter.tempFile(for: store.activeItems))
-//                            } label: {
-//                                Image(systemName: "square.and.arrow.up")
-//                            }
-//                        }
                         Button { showingAddSheet = true } label: {
                             Image(systemName: "plus")
                         }
@@ -46,11 +38,7 @@ struct ItemListView: View {
             }
             .sheet(isPresented: $showingAddSheet)  { addSheet }
             .sheet(isPresented: $showingSettings)  { SettingsView() }
-            .sheet(isPresented: $showingStats)      { StatsView() }
-//            .sheet(item: $shareURL) { identifiable in
-//                ShareSheet(items: [identifiable.url])
-//                    .presentationDetents([.medium, .large])
-//            }
+            .sheet(isPresented: $showingStats)     { StatsView() }
         }
     }
 

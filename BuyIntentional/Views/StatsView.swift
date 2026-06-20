@@ -8,7 +8,6 @@ struct StatsView: View {
             List {
                 savingsSection
                 wishlistSection
-//                insightSection
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Stats")
@@ -51,29 +50,6 @@ struct StatsView: View {
                 .font(.caption)
         }
     }
-
-//    private var insightSection: some View {
-//        Section {
-//            let total = store.savedTotal + store.wishlistTotal
-//            if total > 0 {
-//                let pct = Int((store.savedTotal / total) * 100)
-//                StatRow(
-//                    icon: "brain.head.profile",
-//                    iconColor: .purple,
-//                    label: "Decisions avoided",
-//                    value: "\(pct)%",
-//                    detail: "of tracked spend was rejected"
-//                )
-//            } else {
-//                Text("Add prices to items to see insights.")
-//                    .font(.subheadline)
-//                    .foregroundStyle(.tertiary)
-//                    .padding(.vertical, 4)
-//            }
-//        } header: {
-//            Text("Insights")
-//        }
-//    }
 
     // MARK: - Helpers
 

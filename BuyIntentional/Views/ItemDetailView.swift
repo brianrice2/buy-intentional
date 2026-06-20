@@ -40,7 +40,12 @@ struct ItemDetailView: View {
                 rejectSection
             }
             .padding()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                focusedField = nil
+            }
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -81,7 +86,7 @@ struct ItemDetailView: View {
                 }
                 Spacer()
             }
-            Text("Added \(item.dateAdded.formatted(date: .abbreviated, time: .omitted)) · \(item.daysSinceAdded) days ago")
+            Text("Added \(item.dateAdded.formatted(date: .abbreviated, time: .omitted)) · \(item.daysSinceAdded)")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
@@ -251,4 +256,4 @@ struct ItemDetailView: View {
         commit()
         showingEditName = false
     }
-}
+}   

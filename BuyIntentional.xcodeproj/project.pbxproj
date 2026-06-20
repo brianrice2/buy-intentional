@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		D30FEE082FDB967500D8CBFC /* BuyIntentional.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BuyIntentional.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D30FEE082FDB967500D8CBFC /* Buy Intentional.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Buy Intentional.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		D30FEE092FDB967500D8CBFC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D30FEE082FDB967500D8CBFC /* BuyIntentional.app */,
+				D30FEE082FDB967500D8CBFC /* Buy Intentional.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D30FEE072FDB967500D8CBFC /* BuyIntentional */ = {
+		D30FEE072FDB967500D8CBFC /* Buy Intentional */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D30FEE132FDB967800D8CBFC /* Build configuration list for PBXNativeTarget "BuyIntentional" */;
+			buildConfigurationList = D30FEE132FDB967800D8CBFC /* Build configuration list for PBXNativeTarget "Buy Intentional" */;
 			buildPhases = (
 				D30FEE042FDB967500D8CBFC /* Sources */,
 				D30FEE052FDB967500D8CBFC /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				D30FEE0A2FDB967500D8CBFC /* BuyIntentional */,
 			);
-			name = BuyIntentional;
+			name = "Buy Intentional";
 			packageProductDependencies = (
 			);
 			productName = shelf;
-			productReference = D30FEE082FDB967500D8CBFC /* BuyIntentional.app */;
+			productReference = D30FEE082FDB967500D8CBFC /* Buy Intentional.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D30FEE072FDB967500D8CBFC /* BuyIntentional */,
+				D30FEE072FDB967500D8CBFC /* Buy Intentional */,
 			);
 		};
 /* End PBXProject section */
@@ -322,7 +322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D30FEE132FDB967800D8CBFC /* Build configuration list for PBXNativeTarget "BuyIntentional" */ = {
+		D30FEE132FDB967800D8CBFC /* Build configuration list for PBXNativeTarget "Buy Intentional" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D30FEE142FDB967800D8CBFC /* Debug */,

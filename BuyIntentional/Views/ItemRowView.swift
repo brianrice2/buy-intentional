@@ -42,10 +42,6 @@ struct ItemRowView: View {
     }
 
     private var daysLabel: String {
-        switch item.daysSinceAdded {
-        case 0:  return "Today"
-        case 1:  return "1 day ago"
-        default: return "\(item.daysSinceAdded) days ago"
-        }
+        return item.daysSinceAdded
     }
 }

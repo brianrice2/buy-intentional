@@ -17,8 +17,16 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
         self.questions = questions
     }
 
+    func formatToRelativeString(from pastDate: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full // Options: .short, .abbreviated, .full
+
+        // Automatically generates localized text like "2 days ago" or "yesterday"
+        return formatter.localizedString(for: pastDate, relativeTo: Date())
+    }
+
     var daysSinceAdded: Int {
-        Calendar.current.dateComponents([.day], from: dateAdded, to: Date()).day ?? 0
+        formatToRelativeString(pastDate: dateAdded)
     }
 
     var answeredQuestionCount: Int {

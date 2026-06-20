@@ -9,7 +9,10 @@ struct ItemDetailView: View {
     @State private var newLink      = ""
     @State private var newQuestion  = ""
     @State private var showingRejectAlert = false
+    @State private var showingEditName    = false
+    @State private var editedName         = ""
     @FocusState private var focusedField: Field?
+    @FocusState private var nameFieldFocused: Bool
 
     enum Field: Hashable { case price, notes, link, question }
 
@@ -41,6 +44,17 @@ struct ItemDetailView: View {
         .navigationTitle(item.name)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    editedName = item.name
+                    showingEditName = true
+                } label: {
+                    Image(systemName: "pencil")
+                }
+            }
+        }
+        .sheet(isPresented: $showingEditName) {
+            editNameSheet
         }
         .alert("Reject \"\(item.name)\"?", isPresented: $showingRejectAlert) {
             Button("Reject", role: .destructive) {
@@ -59,7 +73,7 @@ struct ItemDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(label: "Status")
             HStack(spacing: 10) {
-                ForEach([PurchaseStatus.waiting, .approved, .rejected], id: \.self) { status in
+                ForEach(PurchaseStatus.allCases, id: \.self) { status in
                     StatusToggleButton(status: status, isSelected: item.status == status) {
                         item.status = status
                         commit()
@@ -171,6 +185,40 @@ struct ItemDetailView: View {
         .padding(.top, 4)
     }
 
+    private var editNameSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Item name")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 8)
+
+                TextField("Item name", text: $editedName)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.body)
+                    .focused($nameFieldFocused)
+                    .submitLabel(.done)
+                    .onSubmit { submitNameEdit() }
+
+                Spacer()
+            }
+            .padding(.horizontal)
+            .navigationTitle("Edit name")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showingEditName = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { submitNameEdit() }
+                        .disabled(editedName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+            .onAppear { nameFieldFocused = true }
+        }
+        .presentationDetents([.height(200)])
+    }
+
     // MARK: - Actions
 
     private func commit() {
@@ -194,5 +242,13 @@ struct ItemDetailView: View {
         item.questions.append(ReflectionQuestion(question: q))
         commit()
         newQuestion = ""
+    }
+
+    private func submitNameEdit() {
+        let trimmed = editedName.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        item.name = trimmed
+        commit()
+        showingEditName = false
     }
 }

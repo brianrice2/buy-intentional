@@ -40,6 +40,6 @@ struct ItemRowView: View {
     }
 
     private var daysLabel: String {
-        return item.daysSinceAdded
+        item.ageLabel
     }
 }

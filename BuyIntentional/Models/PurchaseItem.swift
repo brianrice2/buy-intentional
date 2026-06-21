@@ -6,6 +6,7 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
     var id: UUID = UUID()
     var name: String
     var dateAdded: Date = Date()
+    var dayAdded: DateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
     var status: PurchaseStatus = .waiting
     var notes: String = ""
     var links: [String] = []
@@ -17,16 +18,17 @@ struct PurchaseItem: Identifiable, Codable, Equatable {
         self.questions = questions
     }
 
-    func formatToRelativeString(from pastDate: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full // Options: .short, .abbreviated, .full
-
-        // Automatically generates localized text like "2 days ago" or "yesterday"
-        return formatter.localizedString(for: pastDate, relativeTo: Date())
+    var daysSinceAdded: Int {
+        let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        return Calendar.current.dateComponents([.day], from: dayAdded, to: today).day ?? 0
     }
 
-    var daysSinceAdded: String {
-        formatToRelativeString(from: dateAdded)
+    var ageLabel: String {
+        switch daysSinceAdded {
+        case 0:  return "Today"
+        case 1:  return "Yesterday"
+        default: return "\(daysSinceAdded) days ago"
+        }
     }
 
     var answeredQuestionCount: Int {

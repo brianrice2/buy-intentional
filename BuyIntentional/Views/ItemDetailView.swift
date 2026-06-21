@@ -86,7 +86,7 @@ struct ItemDetailView: View {
                 }
                 Spacer()
             }
-            Text("Added \(item.dateAdded.formatted(date: .abbreviated, time: .omitted)) · \(item.daysSinceAdded)")
+            Text("Added \(item.dateAdded.formatted(date: .abbreviated, time: .omitted)) · \(item.ageLabel)")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }

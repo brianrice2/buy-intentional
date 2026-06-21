@@ -13,10 +13,12 @@ struct SettingsView: View {
                 Section {
                     NavigationLink(destination: DefaultQuestionsView()) {
                         Label("Default questions", systemImage: "questionmark.bubble")
+                            .labelStyle(.titleAndIcon)
                     }
                     NavigationLink(destination: RejectedItemsView()) {
                         HStack {
                             Label("Rejected items", systemImage: "xmark.circle")
+                                .labelStyle(.titleAndIcon)
                             Spacer()
                             if !store.rejectedItems.isEmpty {
                                 Text("\(store.rejectedItems.count)")
@@ -31,12 +33,14 @@ struct SettingsView: View {
                         HStack {
                             Label("Get in touch", systemImage: "bubble.left.and.bubble.right")
                                 .foregroundStyle(.primary)
+                                .labelStyle(.titleAndIcon)
                             Spacer()
                             Image(systemName: "arrow.up.right")
-                                .font(.caption)
+                                .font(.system(size: 14))
                                 .foregroundStyle(.tertiary)
                         }
                     }
+                    .buttonStyle(.plain)
                 } footer: {
                     Text("Send feedback, report a bug, or request a feature.")
                         .font(.caption)

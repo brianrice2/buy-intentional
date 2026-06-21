@@ -115,3 +115,25 @@ xcuserdata/
 # Keep the shared workspace structure and package versions
 !*.xcworkspace/xcshareddata/
 
+## Gemini
+# Xcode generated
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+# Swift Package Manager
+.build/
+.swiftpm/
+# CocoaPods (if used)
+Pods/
+# Carthage (if used)
+Carthage/Build/
+# Secrets/Configuration
+*.env
+*.secrets
+keys.plist
+# macOS
+.DS_Store
